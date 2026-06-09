@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Поздравляем!!!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* ПРЕЛОАДЕР */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .preloader.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-text {
+            font-size: 2.2rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, #b77fdb, #f5a9d0, #c76b8a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: softPulse 1.4s infinite ease;
+        }
+
+        @keyframes softPulse {
+            0% { opacity: 0.5; transform: scale(0.98);}
+            100% { opacity: 1; transform: scale(1.02);}
+        }
+
+        /* ОСНОВНОЙ КОНТЕНТ */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .main-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* фон */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 10%, #1f0a2b, #0e0a1a, #05050a);
+            z-index: -2;
+        }
+
+        .glow {
+            position: fixed;
+            top: 20%;
+            left: -10%;
+            width: 120%;
+            height: 80%;
+            background: radial-gradient(ellipse, rgba(160, 70, 180, 0.25), transparent 70%);
+            filter: blur(70px);
+            z-index: -1;
+        }
+
+        .card {
+            max-width: 680px;
+            margin: 0 auto;
+            background: rgba(10, 10, 18, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(210, 130, 200, 0.25);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.6);
+        }
+
+        .greeting {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(125deg, #e9b7ff, #f09bcb, #ffad9a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .poem {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #ede2f0;
+            font-weight: 300;
+            margin: 2rem 0;
+            border-left: 3px solid #e07cae;
+            padding-left: 1.5rem;
+        }
+
+        .strong-line {
+            font-weight: 600;
+            color: #f0c0e0;
+            margin-top: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .signature {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #b19fcd;
+            text-align: right;
+            border-top: 1px dashed rgba(210, 140, 180, 0.4);
+            padding-top: 1.2rem;
+        }
+
+        /* КНОПКА */
+        .gift-btn {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        button {
+            background: rgba(210, 130, 200, 0.2);
+            border: 1px solid rgba(210, 130, 200, 0.6);
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #f0c0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        button:hover {
+            background: rgba(210, 130, 200, 0.4);
+            transform: scale(1.02);
+            border-color: #e07cae;
+        }
+
+        /* ОВЕРЛЕЙ НА ВЕСЬ ЭКРАН ДЛЯ ГИФКИ */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .fullscreen-overlay.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .fullscreen-gif {
+            max-width: 90%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 24px;
+            box-shadow: 0 0 30px rgba(210, 130, 200, 0.3);
+            cursor: default;
+        }
+
+        .close-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            font-family: monospace;
+            pointer-events: none;
+        }
+
+        @media (max-width: 550px) {
+            .card { padding: 1.8rem; }
+            .greeting { font-size: 1.5rem; }
+            .poem { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="gradient-bg"></div>
+<div class="glow"></div>
+
+<!-- ПРЕЛОАДЕР -->
+<div class="preloader" id="preloader">
+    <div class="preloader-text">Вы самые лучшие...</div>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="main-content" id="mainContent">
+    <div class="card">
+        <div class="greeting">
+            Спасибо, что верите.<br>
+            Спасибо, что не боитесь сложных вопросов.
+        </div>
+        <div class="poem">
+            Вы даёте свободу — думать, сомневаться, искать своё.<br>
+            Вы дарите лёгкость — даже когда темы тяжелы.<br>
+            Вы учите побеждать — не только оценки, но и себя.
+        </div>
+        <div class="strong-line">
+            Спасибо за поддержку — иногда тихую, но такую важную.
+        </div>
+        <div class="signature">
+                С Днём учителя.<br>
+            С теплом и глубоким уважением. ❤️
+        </div>
+
+        <!-- КНОПКА -->
+        <div class="gift-btn">
+            <button id="showGifBtn">🌸 Показать тепло</button>
+        </div>
+    </div>
+</div>
+
+<!-- ОВЕРЛЕЙ НА ВЕСЬ ЭКРАН ДЛЯ ГИФКИ -->
+<div class="fullscreen-overlay" id="gifOverlay">
+    <img class="fullscreen-gif" id="fullscreenGif" src="" alt="тёплая гифка">
+    <div class="close-hint">✨ нажми в любом месте, чтобы закрыть ✨</div>
+</div>
+
+<script>
+    // ---- ПРЕЛОАДЕР 3 СЕКУНДЫ ----
+    setTimeout(() => {
+        const preloader = document.getElementById('preloader');
+        preloader.classList.add('hide');
+        const main = document.getElementById('mainContent');
+        main.classList.add('show');
+    }, 3000);
+
+    // ---- ГИФКА НА ВЕСЬ ЭКРАН ----
+    const gifPath = "./cat.gif";  // твоя локальная гифка в той же папке
+
+    const showBtn = document.getElementById('showGifBtn');
+    const overlay = document.getElementById('gifOverlay');
+    const gifImg = document.getElementById('fullscreenGif');
+
+    showBtn.addEventListener('click', () => {
+        gifImg.src = gifPath;
+        overlay.classList.add('show');
+    });
+
+    // закрытие по клику на оверлей
+    overlay.addEventListener('click', () => {
+        overlay.classList.remove('show');
+        // не выгружаем гифку сразу, но при следующем открытии загрузится снова
+    });
+</script>
+</body>
+</html>
