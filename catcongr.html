@@ -197,5 +197,26 @@
     btn.addEventListener('click', () => { gif.src = ''; setTimeout(() => { gif.src = gifPath; }, 10); overlay.classList.add('show'); });
     overlay.addEventListener('click', () => { overlay.classList.remove('show'); });
 </script>
+    <!-- добавь в конец body, перед закрывающим </body> -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="./music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const audio = document.getElementById('bgMusic');
+    audio.volume = 0.45; // 45% громкости
+    
+    btn.addEventListener('click', () => {
+        // гифка
+        gif.src = '';
+        setTimeout(() => { gif.src = gifPath; }, 10);
+        overlay.classList.add('show');
+        
+        // музыка
+        if (audio.paused) {
+            audio.play().catch(e => console.log('автоплей заблокирован'));
+        }
+    });
+</script>
 </body>
 </html>
