@@ -200,19 +200,14 @@
     <script>
     (function() {
         const btn = document.getElementById('showGifBtn');
-        
-        if (!btn) {
-            console.log('❌ Кнопка не найдена');
-            return;
-        }
-        
+        if (!btn) return;
+
         let audioContext = null;
         let isPlaying = false;
-        
-        // НОТЫ ДЛЯ МЕЛОДИИ (частота в Гц)
-        // Простая и приятная последовательность (25 секунд, повтор с вариацией)
+
+        // МЕЛОДИЯ (частоты и длительности)
         const melody = [
-            // фраза 1
+            // фраза 1 (знакомая, приятная)
             { note: 523.25, duration: 0.5 },  // До
             { note: 587.33, duration: 0.5 },  // Ре
             { note: 659.25, duration: 0.5 },  // Ми
@@ -220,9 +215,9 @@
             { note: 523.25, duration: 0.5 },  // До
             { note: 587.33, duration: 0.5 },  // Ре
             { note: 659.25, duration: 0.5 },  // Ми
-            { note: 783.99, duration: 1.0 },  // Соль (длиннее)
-            
-            // фраза 2 (чуть выше)
+            { note: 783.99, duration: 1.0 },  // Соль
+
+            // фраза 2 (повыше)
             { note: 659.25, duration: 0.5 },  // Ми
             { note: 783.99, duration: 0.5 },  // Соль
             { note: 880.00, duration: 0.5 },  // Ля
@@ -230,9 +225,9 @@
             { note: 659.25, duration: 0.5 },  // Ми
             { note: 587.33, duration: 0.5 },  // Ре
             { note: 523.25, duration: 0.5 },  // До
-            { note: 493.88, duration: 1.5 },  // Си (ниже, затихание)
-            
-            // фраза 3 (возврат, тёплая)
+            { note: 493.88, duration: 1.5 },  // Си
+
+            // фраза 3 (тёплая, возврат)
             { note: 523.25, duration: 0.5 },  // До
             { note: 587.33, duration: 0.5 },  // Ре
             { note: 659.25, duration: 0.5 },  // Ми
@@ -241,79 +236,72 @@
             { note: 659.25, duration: 0.5 },  // Ми
             { note: 783.99, duration: 0.8 },  // Соль
             { note: 880.00, duration: 0.8 },  // Ля
-            { note: 783.99, duration: 1.0 },  // Соль (финал)
-            
-            // фраза 4 (эхо, затухание)
+            { note: 783.99, duration: 1.0 },  // Соль
+
+            // фраза 4 (затихание, но всё ещё слышно)
             { note: 659.25, duration: 0.6 },  // Ми
             { note: 587.33, duration: 0.6 },  // Ре
             { note: 523.25, duration: 0.6 },  // До
             { note: 493.88, duration: 0.8 },  // Си
-            { note: 440.00, duration: 1.0 },  // Ля (тихий финал)
+            { note: 440.00, duration: 1.2 },  // Ля
         ];
-        
+
         btn.addEventListener('click', () => {
             if (isPlaying) return;
-            
+
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const now = audioContext.currentTime;
-                
-                // ОСНОВНАЯ ГРОМКОСТЬ (60%)
+
+                // ГРОМКОСТЬ 90% (максимум без хрипов)
                 const masterGain = audioContext.createGain();
-                masterGain.gain.value = 2;
+                masterGain.gain.value = 0.9;
                 masterGain.connect(audioContext.destination);
-                
-                // === 1. ЗВУК «ТУН» В НАЧАЛЕ (короткий и чёткий) ===
+
+                // === 1. ЗВУК «ТУН» ===
                 const tunOsc = audioContext.createOscillator();
                 const tunGain = audioContext.createGain();
                 tunOsc.type = 'sine';
-                tunOsc.frequency.value = 130.81;  // До (низкое, как колокол)
+                tunOsc.frequency.value = 130.81; // низкий До
                 tunOsc.connect(tunGain);
                 tunGain.connect(masterGain);
-                tunGain.gain.value = 0.7;
+                tunGain.gain.value = 0.9; // тоже громкий
                 tunOsc.start(now);
                 tunOsc.stop(now + 0.25);
                 tunGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                
-                // === 2. МЕЛОДИЯ (длинная, 25-30 секунд) ===
-                let timeOffset = 0.4; // начинаем после «тун»
-                
+
+                // === 2. МЕЛОДИЯ (теперь громкая, как тун) ===
+                let timeOffset = 0.35;
+
                 melody.forEach((note) => {
                     const osc = audioContext.createOscillator();
                     const noteGain = audioContext.createGain();
-                    
+
                     osc.type = 'sine';
                     osc.frequency.value = note.note;
-                    
+
                     osc.connect(noteGain);
                     noteGain.connect(masterGain);
-                    
-                    // громкость ноты (немного варьируется для живости)
-                    let volume = 0.5;
-                    if (note.duration > 0.8) volume = 0.45;
-                    noteGain.gain.value = volume;
-                    
+
+                    // ГРОМКОСТЬ НОТЫ — ТОЖЕ БОЛЬШАЯ (0.85)
+                    noteGain.gain.value = 0.85;
+
                     osc.start(now + timeOffset);
                     osc.stop(now + timeOffset + note.duration);
-                    
-                    // плавное затухание в конце каждой ноты
-                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + timeOffset + note.duration);
-                    
+
+                    // плавное затухание в конце
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + timeOffset + note.duration);
+
                     timeOffset += note.duration;
                 });
-                
+
                 isPlaying = true;
-                console.log('🎵 звук проигран, длительность ~' + Math.round(timeOffset) + ' сек');
-                
-                // блокируем повтор на время звучания + 1 секунда
                 setTimeout(() => { isPlaying = false; }, (timeOffset + 1) * 1000);
-                
+
             } catch(e) {
-                console.log('❌ ошибка звука:', e);
+                console.log('ошибка звука:', e);
             }
         });
-        
-        console.log('✅ звуковой скрипт готов (тун + мелодия 30 сек)');
     })();
 </script>
 </body>
