@@ -220,7 +220,7 @@
                 // Создаём простой приятный звук (пианино / колокольчик)
                 const now = audioContext.currentTime;
                 const gainNode = audioContext.createGain();
-                gainNode.gain.value = 0.35; // громкость 35%
+                gainNode.gain.value = 1; // громкость 35%
                 gainNode.connect(audioContext.destination);
                 
                 // Играем короткую приятную мелодию (5 нот)
