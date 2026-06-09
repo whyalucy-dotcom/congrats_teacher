@@ -260,7 +260,7 @@
                 
                 // ОСНОВНАЯ ГРОМКОСТЬ (60%)
                 const masterGain = audioContext.createGain();
-                masterGain.gain.value = 0.6;
+                masterGain.gain.value = 1;
                 masterGain.connect(audioContext.destination);
                 
                 // === 1. ЗВУК «ТУН» В НАЧАЛЕ (короткий и чёткий) ===
