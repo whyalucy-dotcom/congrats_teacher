@@ -206,57 +206,114 @@
             return;
         }
         
-        // СОЗДАЁМ ЗВУК ПРЯМО В БРАУЗЕРЕ
         let audioContext = null;
         let isPlaying = false;
+        
+        // НОТЫ ДЛЯ МЕЛОДИИ (частота в Гц)
+        // Простая и приятная последовательность (25 секунд, повтор с вариацией)
+        const melody = [
+            // фраза 1
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 587.33, duration: 0.5 },  // Ре
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 587.33, duration: 0.5 },  // Ре
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 783.99, duration: 1.0 },  // Соль (длиннее)
+            
+            // фраза 2 (чуть выше)
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 783.99, duration: 0.5 },  // Соль
+            { note: 880.00, duration: 0.5 },  // Ля
+            { note: 783.99, duration: 0.5 },  // Соль
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 587.33, duration: 0.5 },  // Ре
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 493.88, duration: 1.5 },  // Си (ниже, затихание)
+            
+            // фраза 3 (возврат, тёплая)
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 587.33, duration: 0.5 },  // Ре
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 523.25, duration: 0.5 },  // До
+            { note: 587.33, duration: 0.5 },  // Ре
+            { note: 659.25, duration: 0.5 },  // Ми
+            { note: 783.99, duration: 0.8 },  // Соль
+            { note: 880.00, duration: 0.8 },  // Ля
+            { note: 783.99, duration: 1.0 },  // Соль (финал)
+            
+            // фраза 4 (эхо, затухание)
+            { note: 659.25, duration: 0.6 },  // Ми
+            { note: 587.33, duration: 0.6 },  // Ре
+            { note: 523.25, duration: 0.6 },  // До
+            { note: 493.88, duration: 0.8 },  // Си
+            { note: 440.00, duration: 1.0 },  // Ля (тихий финал)
+        ];
         
         btn.addEventListener('click', () => {
             if (isPlaying) return;
             
             try {
-                // Создаём аудио-контекст (по клику, разрешено браузером)
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Создаём простой приятный звук (пианино / колокольчик)
                 const now = audioContext.currentTime;
-                const gainNode = audioContext.createGain();
-                gainNode.gain.value = 1; // громкость 35%
-                gainNode.connect(audioContext.destination);
                 
-                // Играем короткую приятную мелодию (5 нот)
-                const frequencies = [523.25, 587.33, 659.25, 523.25, 783.99]; // До-Ре-Ми-До-Соль
-                const durations = [0.4, 0.4, 0.4, 0.4, 0.8];
+                // ОСНОВНАЯ ГРОМКОСТЬ (60%)
+                const masterGain = audioContext.createGain();
+                masterGain.gain.value = 0.6;
+                masterGain.connect(audioContext.destination);
                 
-                for (let i = 0; i < frequencies.length; i++) {
+                // === 1. ЗВУК «ТУН» В НАЧАЛЕ (короткий и чёткий) ===
+                const tunOsc = audioContext.createOscillator();
+                const tunGain = audioContext.createGain();
+                tunOsc.type = 'sine';
+                tunOsc.frequency.value = 130.81;  // До (низкое, как колокол)
+                tunOsc.connect(tunGain);
+                tunGain.connect(masterGain);
+                tunGain.gain.value = 0.7;
+                tunOsc.start(now);
+                tunOsc.stop(now + 0.25);
+                tunGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                
+                // === 2. МЕЛОДИЯ (длинная, 25-30 секунд) ===
+                let timeOffset = 0.4; // начинаем после «тун»
+                
+                melody.forEach((note) => {
                     const osc = audioContext.createOscillator();
-                    osc.type = 'sine'; // чистый, мягкий звук
-                    osc.frequency.value = frequencies[i];
-                    
                     const noteGain = audioContext.createGain();
-                    noteGain.gain.value = 0.35;
+                    
+                    osc.type = 'sine';
+                    osc.frequency.value = note.note;
                     
                     osc.connect(noteGain);
-                    noteGain.connect(audioContext.destination);
+                    noteGain.connect(masterGain);
                     
-                    osc.start(now + durations.slice(0, i).reduce((a, b) => a + b, 0));
-                    osc.stop(now + durations.slice(0, i + 1).reduce((a, b) => a + b, 0));
+                    // громкость ноты (немного варьируется для живости)
+                    let volume = 0.5;
+                    if (note.duration > 0.8) volume = 0.45;
+                    noteGain.gain.value = volume;
                     
-                    // плавное затухание
-                    noteGain.gain.exponentialRampToValueAtTime(0.0001, now + durations.slice(0, i + 1).reduce((a, b) => a + b, 0));
-                }
+                    osc.start(now + timeOffset);
+                    osc.stop(now + timeOffset + note.duration);
+                    
+                    // плавное затухание в конце каждой ноты
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + timeOffset + note.duration);
+                    
+                    timeOffset += note.duration;
+                });
                 
                 isPlaying = true;
-                console.log('🎵 звук проигран');
+                console.log('🎵 звук проигран, длительность ~' + Math.round(timeOffset) + ' сек');
                 
-                // Через 2 секунды можно играть снова
-                setTimeout(() => { isPlaying = false; }, 2000);
+                // блокируем повтор на время звучания + 1 секунда
+                setTimeout(() => { isPlaying = false; }, (timeOffset + 1) * 1000);
                 
             } catch(e) {
                 console.log('❌ ошибка звука:', e);
             }
         });
         
-        console.log('✅ звуковой скрипт готов');
+        console.log('✅ звуковой скрипт готов (тун + мелодия 30 сек)');
     })();
 </script>
 </body>
