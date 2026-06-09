@@ -197,26 +197,53 @@
     btn.addEventListener('click', () => { gif.src = ''; setTimeout(() => { gif.src = gifPath; }, 10); overlay.classList.add('show'); });
     overlay.addEventListener('click', () => { overlay.classList.remove('show'); });
 </script>
-    <!-- добавь в конец body, перед закрывающим </body> -->
-<audio id="bgMusic" loop preload="auto">
+    <audio id="bgMusic" loop preload="auto">
     <source src="./music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-    const audio = document.getElementById('bgMusic');
-    audio.volume = 0.45; // 45% громкости
-    
-    btn.addEventListener('click', () => {
-        // гифка
-        gif.src = '';
-        setTimeout(() => { gif.src = gifPath; }, 10);
-        overlay.classList.add('show');
+    (function() {
+        // Находим аудио и кнопку
+        const audio = document.getElementById('bgMusic');
+        const btn = document.getElementById('showGifBtn');
         
-        // музыка
-        if (audio.paused) {
-            audio.play().catch(e => console.log('автоплей заблокирован'));
+        if (!audio) {
+            console.log('❌ Аудио элемент не найден');
+            return;
         }
-    });
+        if (!btn) {
+            console.log('❌ Кнопка showGifBtn не найдена');
+            return;
+        }
+        
+        // Громкость 40%
+        audio.volume = 0.4;
+        
+        // Пытаемся предзагрузить файл
+        audio.load();
+        
+        // Слушаем ошибки загрузки
+        audio.addEventListener('error', (e) => {
+            console.log('❌ Ошибка загрузки музыки:', e);
+            alert('Файл music.mp3 не загрузился. Проверь, что он лежит рядом с index.html');
+        });
+        
+        // При клике на кнопку включаем музыку (если ещё не играет)
+        btn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    console.log('🎵 Музыка играет, громкость:', audio.volume);
+                }).catch((err) => {
+                    console.log('❌ Ошибка воспроизведения:', err);
+                    alert('Не удалось включить музыку. Ошибка: ' + err.message);
+                });
+            } else {
+                console.log('🎵 Музыка уже играет');
+            }
+        });
+        
+        console.log('✅ Скрипт готов. Жду клика по кнопке');
+    })();
 </script>
 </body>
 </html>
