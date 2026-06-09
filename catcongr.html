@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Поздравление | Тёплые котики</title>
+    <title>Тёплые котики | Для тебя</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #FDF8F0;
+            background: #FEF7E8;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,52 +17,41 @@
             position: relative;
             padding: 2rem;
         }
-
-        .cat-pattern {
+        /* кото-паттерн */
+        .cat-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><path fill="%23F2D9B0" d="M25,15 h10 v10 h-10 z M15,25 h10 v10 h-10 z M35,25 h10 v10 h-10 z M25,35 h10 v10 h-10 z" opacity="0.3"/><circle cx="20" cy="18" r="4" fill="%23E8C99B" opacity="0.4"/><circle cx="40" cy="38" r="4" fill="%23E8C99B" opacity="0.4"/><path d="M28 12 L30 8 L32 12 Z" fill="%23E8C99B" opacity="0.3"/><path d="M28 42 L30 46 L32 42 Z" fill="%23E8C99B" opacity="0.3"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="20" cy="20" r="6" fill="%23F2D9B0" opacity="0.4"/><circle cx="60" cy="50" r="5" fill="%23E8C99B" opacity="0.35"/><path d="M35 15 L40 10 L45 15 Z" fill="%23F2D9B0" opacity="0.3"/><path d="M30 60 L35 55 L40 60 Z" fill="%23E8C99B" opacity="0.3"/><path d="M65 25 L68 22 L71 25 Z" fill="%23F2D9B0" opacity="0.25"/></svg>');
             background-repeat: repeat;
-            background-size: 60px 60px;
-            opacity: 0.35;
+            background-size: 70px 70px;
+            opacity: 0.5;
             z-index: 0;
             pointer-events: none;
         }
-
         .preloader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #FDF8F0;
+            background: #FEF7E8;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             transition: opacity 1s ease, visibility 1s ease;
         }
-
-        .preloader.hide {
-            opacity: 0;
-            visibility: hidden;
-        }
-
+        .preloader.hide { opacity: 0; visibility: hidden; }
         .preloader-text {
             font-size: 2rem;
             font-weight: 500;
             color: #D6A26B;
-            animation: softPulse 1.4s infinite ease;
+            animation: softPop 1.4s infinite ease;
         }
-
-        @keyframes softPulse {
-            0% { opacity: 0.5; transform: scale(0.98);}
-            100% { opacity: 1; transform: scale(1.02);}
-        }
-
+        @keyframes softPop { 0% { opacity: 0.5; transform: scale(0.96); } 100% { opacity: 1; transform: scale(1.04); } }
         .main-content {
             opacity: 0;
             transform: translateY(20px);
@@ -76,63 +60,53 @@
             position: relative;
             z-index: 2;
         }
-
-        .main-content.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+        .main-content.show { opacity: 1; transform: translateY(0); }
         .card {
             max-width: 620px;
             margin: 0 auto;
-            background: rgba(255, 252, 245, 0.94);
+            background: rgba(255, 252, 245, 0.96);
             backdrop-filter: blur(8px);
-            border-radius: 56px;
+            border-radius: 64px;
             padding: 2.5rem 2rem;
-            border: 1px solid rgba(230, 190, 130, 0.5);
-            box-shadow: 0 25px 40px -15px rgba(100, 60, 20, 0.12);
+            border: 1px solid rgba(230, 190, 130, 0.6);
+            box-shadow: 0 25px 40px -15px rgba(100, 60, 20, 0.15);
         }
-
+        .cat-icon { font-size: 3rem; text-align: center; margin-bottom: 0.5rem; }
         .greeting {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 600;
-            color: #B87B3E;
+            color: #C2884A;
+            text-align: center;
             margin-bottom: 1rem;
             line-height: 1.3;
-            text-align: center;
         }
-
         .poem {
-            font-size: 1.05rem;
+            font-size: 1rem;
             line-height: 1.7;
-            color: #7A5A3E;
+            color: #8B6B48;
             font-weight: 400;
             margin: 1.8rem 0;
-            border-left: 3px solid #E8C99B;
-            padding-left: 1.5rem;
-        }
-
-        .strong-line {
-            font-weight: 600;
-            color: #C28A54;
-            margin-top: 1rem;
-            font-size: 1rem;
-        }
-
-        .signature {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #C2A07A;
-            text-align: right;
-            border-top: 1px dashed #E8D0B0;
-            padding-top: 1.2rem;
-        }
-
-        .gift-btn {
-            margin-top: 2rem;
+            background: rgba(245, 230, 210, 0.5);
+            padding: 1.2rem;
+            border-radius: 32px;
             text-align: center;
         }
-
+        .warm-line {
+            font-weight: 500;
+            color: #D6A26B;
+            margin-top: 1rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #C2A07A;
+            text-align: center;
+            border-top: 1px solid #F0DFC8;
+            padding-top: 1rem;
+        }
+        .gift-btn { margin-top: 2rem; text-align: center; }
         button {
             background: #F5E6D2;
             border: 1px solid #E8C99B;
@@ -145,20 +119,14 @@
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
         }
-
-        button:hover {
-            background: #EDD8BC;
-            transform: scale(1.02);
-            border-color: #D6A26B;
-        }
-
-        .fullscreen-overlay {
+        button:hover { background: #EDD8BC; transform: scale(1.02); }
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(253, 248, 240, 0.94);
+            background: rgba(254, 247, 232, 0.96);
             backdrop-filter: blur(6px);
             z-index: 2000;
             display: flex;
@@ -170,100 +138,64 @@
             transition: visibility 0.3s ease, opacity 0.3s ease;
             cursor: pointer;
         }
-
-        .fullscreen-overlay.show {
-            visibility: visible;
-            opacity: 1;
+        .overlay.show { visibility: visible; opacity: 1; }
+        .gif-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 32px;
+            box-shadow: 0 0 30px rgba(200, 140, 80, 0.3);
+            cursor: default;
         }
-
-       .halfscreen-gif {
-    max-width: 100%;
-    height: auto;
-    border-radius: 24px;
-    box-shadow: 0 0 30px rgba(210, 130, 200, 0.4);
-    cursor: defaul
-
         .close-hint {
             margin-top: 20px;
             color: #C2A07A;
             font-size: 0.8rem;
-            font-family: monospace;
-            background: rgba(255,245,230,0.8);
+            background: rgba(245, 230, 210, 0.9);
             padding: 6px 16px;
             border-radius: 40px;
         }
-
         @media (max-width: 550px) {
             .card { padding: 1.8rem; }
             .greeting { font-size: 1.5rem; }
-            .poem { font-size: 0.95rem; }
-            .halfscreen-gif { width: 70vw; }
+            .poem { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-<div class="cat-pattern"></div>
-
-<div class="preloader" id="preloader">
-    <div class="preloader-text">☕ что-то тёплое...</div>
-</div>
-
+<div class="cat-bg"></div>
+<div class="preloader" id="preloader"><div class="preloader-text">☕ что-то тёплое...</div></div>
 <div class="main-content" id="mainContent">
     <div class="card">
-        <div class="greeting">
-            Ты делаешь мир уютнее.
-        </div>
+        <div class="cat-icon">🐱☕💕</div>
+        <div class="greeting">Ты — моё самое тёплое место.</div>
         <div class="poem">
-            С тобой даже пасмурный день становится тёплым.<br>
+            С тобой даже пасмурный день становится уютным.<br>
             С тобой сложное — простым.<br>
             А тишина — самой лучшей музыкой.<br>
             <br>
             Спасибо, что ты есть.<br>
             Спасибо, что ты рядом.
         </div>
-        <div class="strong-line">
-            Ты — моё «домой».
-        </div>
-        <div class="signature">
-            🐱 с теплом и мурчанием
-        </div>
-
-        <div class="gift-btn">
-            <button id="showGifBtn">🐾 показать тепло 🐾</button>
-        </div>
+        <div class="warm-line">❤️ ты — моё «домой» ❤️</div>
+        <div class="signature">🐱 с теплом и мурчанием 🐱</div>
+        <div class="gift-btn"><button id="showGifBtn">🐾 показать кото-тепло 🐾</button></div>
     </div>
 </div>
-
-<div class="fullscreen-overlay" id="gifOverlay">
-    <img class="halfscreen-gif" id="halfscreenGif" src="" alt="тёплая гифка">
-    <div class="close-hint">✨ нажми в любом месте, чтобы закрыть ✨</div>
+<div class="overlay" id="gifOverlay">
+    <img class="gif-img" id="gifImage" src="" alt="тёплая гифка">
+    <div class="close-hint">🐱 нажми в любом месте, чтобы закрыть 🐱</div>
 </div>
-
 <script>
     setTimeout(() => {
-        const preloader = document.getElementById('preloader');
-        preloader.classList.add('hide');
-        const main = document.getElementById('mainContent');
-        main.classList.add('show');
+        document.getElementById('preloader').classList.add('hide');
+        document.getElementById('mainContent').classList.add('show');
     }, 3000);
-
     const gifPath = "./cat.gif";
-
-    const showBtn = document.getElementById('showGifBtn');
+    const btn = document.getElementById('showGifBtn');
     const overlay = document.getElementById('gifOverlay');
-    const gifImg = document.getElementById('halfscreenGif');
-
-    showBtn.addEventListener('click', () => {
-        gifImg.src = '';
-        setTimeout(() => {
-            gifImg.src = gifPath;
-        }, 10);
-        overlay.classList.add('show');
-    });
-
-    overlay.addEventListener('click', () => {
-        overlay.classList.remove('show');
-    });
+    const gif = document.getElementById('gifImage');
+    btn.addEventListener('click', () => { gif.src = ''; setTimeout(() => { gif.src = gifPath; }, 10); overlay.classList.add('show'); });
+    overlay.addEventListener('click', () => { overlay.classList.remove('show'); });
 </script>
 </body>
 </html>
